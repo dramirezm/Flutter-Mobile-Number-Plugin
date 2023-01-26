@@ -165,7 +165,8 @@ public class MobileNumberPlugin implements FlutterPlugin, ActivityAware, MethodC
 
     private void getMobileNumber() {
         if (!hasPhonePermission()) {
-            requestPhonePermission();
+            generateMobileNumber();
+//             requestPhonePermission();
         } else {
             // Permission has already been granted
             generateMobileNumber();
