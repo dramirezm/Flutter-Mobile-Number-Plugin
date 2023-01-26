@@ -144,8 +144,8 @@ public class MobileNumberPlugin implements FlutterPlugin, ActivityAware, MethodC
 
     private void requestPhonePermission() {
         if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(activity,
-                    Manifest.permission.READ_PHONE_NUMBERS)) {
+
+            if (ContextCompat.checkSelfPermission(this.activity, Manifest.permission.READ_PHONE_NUMBERS) == PackageManager.PERMISSION_GRANTED) {
                 // Show an explanation to the user *asynchronously* -- don't block
                 // this thread waiting for the user's response! After the user
                 // sees the explanation, try again to request the permission.
@@ -165,7 +165,9 @@ public class MobileNumberPlugin implements FlutterPlugin, ActivityAware, MethodC
 
     private void getMobileNumber() {
         if (!hasPhonePermission()) {
-            requestPhonePermission();
+
+//                generateMobileNumber();
+             requestPhonePermission();
         } else {
             // Permission has already been granted
             generateMobileNumber();
