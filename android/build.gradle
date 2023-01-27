@@ -22,10 +22,10 @@ rootProject.allprojects {
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 33
 
     defaultConfig {
-        targetSdkVersion 29
+        targetSdkVersion 33
         minSdkVersion 17
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
