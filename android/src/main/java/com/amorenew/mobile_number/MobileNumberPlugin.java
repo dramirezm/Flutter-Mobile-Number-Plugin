@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.Handler;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
@@ -81,6 +82,8 @@ public class MobileNumberPlugin implements FlutterPlugin, ActivityAware, MethodC
         });
     }
 
+
+
     @Override
     public void onDetachedFromEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
 
@@ -109,7 +112,7 @@ public class MobileNumberPlugin implements FlutterPlugin, ActivityAware, MethodC
     }
 
     @Override
-    public void onMethodCall(MethodCall call, Result result) {
+    public void onMethodCall(MethodCall call, final Result result) {
         this.result = result;
         final String method_GetMobileNumber = "getMobileNumber";
         final String method_hasPhonePermission = "hasPhonePermission";
@@ -121,7 +124,24 @@ public class MobileNumberPlugin implements FlutterPlugin, ActivityAware, MethodC
                 getMobileNumber();
                 break;
             case method_hasPhonePermission:
-                result.success(hasPhonePermission());
+                if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+                    if (ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_PHONE_NUMBERS) == PackageManager.PERMISSION_GRANTED){
+                        result.success(hasPhonePermission());
+                    }else{
+                        ActivityCompat.requestPermissions(activity,
+                                new String[]{Manifest.permission.READ_PHONE_NUMBERS}, MY_PERMISSIONS_REQUEST_READ_PHONE_STATE);
+                        final Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                result.success(hasPhonePermission());
+                            }
+                        }, 1000);
+                    }
+                }else{
+                    result.success(hasPhonePermission());
+
+                }
                 break;
             case method_requestPhonePermission:
                 requestPhonePermission();
@@ -134,6 +154,7 @@ public class MobileNumberPlugin implements FlutterPlugin, ActivityAware, MethodC
 
     private boolean hasPhonePermission() {
         if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+
             return ContextCompat.checkSelfPermission(applicationContext,
                     Manifest.permission.READ_PHONE_NUMBERS) == PackageManager.PERMISSION_GRANTED;
         } else {
