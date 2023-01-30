@@ -136,7 +136,7 @@ public class MobileNumberPlugin implements FlutterPlugin, ActivityAware, MethodC
                             public void run() {
                                 result.success(hasPhonePermission());
                             }
-                        }, 1000);
+                        }, 1500);
                     }
                 }else{
                     result.success(hasPhonePermission());
