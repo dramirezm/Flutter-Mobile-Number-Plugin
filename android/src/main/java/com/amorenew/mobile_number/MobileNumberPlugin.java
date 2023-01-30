@@ -126,7 +126,17 @@ public class MobileNumberPlugin implements FlutterPlugin, ActivityAware, MethodC
             case method_hasPhonePermission:
                 if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
                     if (ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_PHONE_NUMBERS) == PackageManager.PERMISSION_GRANTED){
-                        result.success(hasPhonePermission());
+                        ActivityCompat.requestPermissions(activity,
+                                new String[]{Manifest.permission.READ_PHONE_NUMBERS}, MY_PERMISSIONS_REQUEST_READ_PHONE_STATE);
+                        final Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                result.success(hasPhonePermission());
+                            }
+                        }, 1500);
+
+//                        result.success(hasPhonePermission());
                     }else{
                         ActivityCompat.requestPermissions(activity,
                                 new String[]{Manifest.permission.READ_PHONE_NUMBERS}, MY_PERMISSIONS_REQUEST_READ_PHONE_STATE);
